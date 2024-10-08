@@ -57,9 +57,10 @@ bool SocketCom::bindSocket(void)
     stServerAddress.sin_zero[8] = NULL_CHARACTER;
 #if (SOCKET_COM == SOC_SER)
     // Bind socket with values address and port from the sockaddr_in structure
-    cBindState = bind(glSocketDescriptor, (struct sockaddr*)&stServerAddress, 
+    cBindState = bind(getSocketDes(), (struct sockaddr*)&stServerAddress, 
                 sizeof(struct sockaddr));
 
+    std::cout << "CBindState : " << cBindState + 48 << std::endl;
     // Check if the binding was successful
     if(cBindState < 0)
     {
@@ -117,4 +118,53 @@ bool SocketCom::sendMessage(int32 lSocket, uint8* pucMessage)
     }
 
     return blStatus;
+}
+
+//******************************* getSocketDes ********************************
+//Purpose : Read the socket descriptor value
+//Inputs  : Nil
+//Outputs : Nil
+//Return  : Return the socket descriptor value
+//Notes   : Nil
+//*****************************************************************************
+int32 SocketCom::getSocketDes()
+{
+    return glSocketDescriptor;
+}
+
+//******************************* setSocketDes ********************************
+//Purpose : Read the socket descriptor value
+//Inputs  : SocDes
+//Outputs : Nil
+//Return  : Nil
+//Notes   : Nil
+//*****************************************************************************
+void SocketCom::setSocketDes(int32 SocDes)
+{
+    glSocketDescriptor = SocDes;
+}
+
+
+//******************************** getCliSoc **********************************
+//Purpose : Read the client socket value
+//Inputs  : Nil
+//Outputs : Nil
+//Return  : Return the client socket value
+//Notes   : Nil
+//*****************************************************************************
+int32 SocketCom::getCliSoc()
+{
+    return glClientSocket;
+}
+
+//******************************** setClSoc ***********************************
+//Purpose : Set the client socket value
+//Inputs  : CliSoc
+//Outputs : Nil
+//Return  : nil
+//Notes   : Nil
+//*****************************************************************************
+void SocketCom::setCliSoc(int32 CliSoc)
+{
+    glClientSocket = CliSoc;
 }

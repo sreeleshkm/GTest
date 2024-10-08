@@ -18,9 +18,11 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <fcntl.h>
 #include "types.h"
 
 //***************************** Global Constants *******************************
@@ -39,9 +41,11 @@
 //*****************************************************************************
 class SocketCom
 {
-public:
+private:
     int32 glSocketDescriptor = 0;
     int32 glClientSocket = 0;
+
+public:
     uint8 pucRecieveBuffer[REC_MSG_BUF_LEN] = {0};
     // Structure to represent the address
     struct sockaddr_in stServerAddress = {0};
@@ -50,6 +54,10 @@ public:
     bool bindSocket(void);
     bool readMessage(int32 lSocket);
     bool sendMessage(int32 lSocket, uint8* pucMessage);
+    int32 getSocketDes(void);
+    void setSocketDes(int32 SocDes);
+    int32 getCliSoc(void);
+    void setCliSoc(int32 CliSoc);
 };
 
 #endif // _SOCKET_COMMON_H_

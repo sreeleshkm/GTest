@@ -27,28 +27,29 @@ using namespace std;
 bool ServerCom::startConnection(void)
 {
     bool blConState = false;
-    // Structure to represent the address
-    struct sockaddr_in stServerAddress = {0};
 
     blConState = createSocket();
+    cout << "Socket create state : " << blConState + 48 << endl;
 
     if (blConState == true)
     {
-        cout << "Socket created\n";
-
-        blConState = setOption();
+        blConState = setOption(getSocketDes());
+        cout << "setOption state : " << blConState + 48 << endl;
 
         if (blConState == true)
         {
             blConState = bindSocket();
+            cout << "bindSocket state : " << blConState + 48 << endl;
 
             if (blConState == true)
             {
-                blConState = listenSocket();
+                blConState = listenSocket(getSocketDes());
+                cout << "listenSocket state : " << blConState + 48 << endl;
 
                 if (blConState == true)
                 {
-                    blConState = acceptConnection();
+                    blConState = acceptConnection(getSocketDes());
+                    cout << "acceptConnection state : " << blConState + 48 << endl;
 
                     if (blConState == true)
                     {
@@ -89,7 +90,7 @@ bool ServerCom::startConnection(void)
 //Return  : Return status of the option setting.
 //Notes   : Nil
 //*****************************************************************************
-bool ServerCom::setOption(void)
+bool ServerCom::setOption(int32 lSocDes)
 {
     bool blStatus = true;
     int32 lSocOptState = 0;
@@ -97,7 +98,7 @@ bool ServerCom::setOption(void)
     uint32 ulOptionValue = 1;
 
     // Set options for the socket
-    lSocOptState = setsockopt(glSocketDescriptor, SOL_SOCKET, SO_REUSEADDR,
+    lSocOptState = setsockopt(lSocDes, SOL_SOCKET, SO_REUSEADDR,
                     &ulOptionValue, sizeof(ulOptionValue));
 
     // Check if options are set successfully
@@ -111,18 +112,18 @@ bool ServerCom::setOption(void)
 
 //****************************** listenSocket *********************************
 //Purpose : Listen for connections from the client.
-//Inputs  : Nil
+//Inputs  : lSocDes
 //Outputs : Nil
 //Return  : Return status of the socket listening
 //Notes   : Nil
 //*****************************************************************************
-bool ServerCom::listenSocket(void)
+bool ServerCom::listenSocket(int32 lSocDes)
 {
     bool blStatus = true;
     int32 lLisState = 0;
 
     // Listen on specified port with a maximum of 4 requests
-    lLisState = listen(glSocketDescriptor, 4);
+    lLisState = listen(lSocDes, 4);
 
     // Check if the socket is listening successfully
     if(lLisState < 0)
@@ -135,24 +136,26 @@ bool ServerCom::listenSocket(void)
 
 //**************************** acceptConnection *******************************
 //Purpose : Accept the connection signal from the client
-//Inputs  : Nil
+//Inputs  : lSocDes
 //Outputs : Nil
 //Return  : Return status of the socket connection
 //Notes   : Nil
 //*****************************************************************************
-bool ServerCom::acceptConnection(void)
+bool ServerCom::acceptConnection(int32 lSocDes)
 {
     bool blStatus = true;
     uint32 ulLenOfAddress = 0;
+    int32 lClientSoc = 0;
 
     ulLenOfAddress = sizeof(struct sockaddr);
 
     // Accept connection signals from the client
-    glClientSocket = accept(glSocketDescriptor, 
+    lClientSoc = accept(lSocDes, 
                     (struct sockaddr*)&stServerAddress, &ulLenOfAddress);
 
+    setCliSoc(lClientSoc);
     // Check if the server is accepting the signals from the client
-    if(glClientSocket < 0)
+    if(lClientSoc < 0)
     {
         blStatus = false;
     }

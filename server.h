@@ -30,10 +30,10 @@ class ServerCom : public SocketCom
 public:
     bool startConnection(void);
 
-private:
-    bool setOption(void);
-    bool listenSocket(void);
-    bool acceptConnection(void);
+// private:
+    bool setOption(int32 lSocDes);
+    bool listenSocket(int32 lSocDes);
+    bool acceptConnection(int32 lSocDes);
 };
 
 #endif // _SERVER_H_ 
